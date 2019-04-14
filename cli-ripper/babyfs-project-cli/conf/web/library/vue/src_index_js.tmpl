@@ -1,0 +1,12 @@
+/**
+* 主模块文件
+*/
+import 'babel-polyfill';
+
+import babyfsComp from './babyfs-comp/babyfs-comp.vue';
+
+export default {
+	install(Vue) {
+		Vue.component('babyfs-comp', babyfsComp);
+	}
+};
