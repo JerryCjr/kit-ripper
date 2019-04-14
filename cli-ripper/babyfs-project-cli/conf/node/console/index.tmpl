@@ -1,0 +1,16 @@
+/**
+* 主模块文件
+*/
+import 'babel-polyfill';
+
+/**
+ * 入口函数
+ */
+function main(...args) {
+	process.stdout.write('Hello world!\n');
+}
+
+/**
+ * 缺省执行main函数
+ */
+main(...process.argv.slice(2));
