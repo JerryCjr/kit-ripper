@@ -61,6 +61,8 @@
     "not ie <= 8"
   ],
   "dependencies": {
-    "babel-polyfill": "^6.23.0"
+    "babel-polyfill": "^6.23.0",
+    "babyfs-env": "^1.0.0",
+    "babyfs-request": "^0.2.2"
   }
 }
