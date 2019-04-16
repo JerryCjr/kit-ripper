@@ -6,7 +6,11 @@ import {
   assert
 } from './util.js';
 import $ajax from './ajax';
+import env from 'babyfs-env';
 
+const API_HOST = env.wapi_api; // host
+const API_URL_LOG_UPLOAD = `${API_HOST}/user/log/upload`; // log upload url
+const QN_DOMAIN = 'https://s0.babyfs.cn'; // qiniu domain
 const UTYPE = {
   default: 0,
   trace: 1
@@ -22,7 +26,10 @@ function traceUpload() {
 
   const CONFIG = {
     key: null, // 不指定key名称 使用hash值
-    token: '1u1lAZOfj5sg_DOgFtZOFePnKUABddodvvnw4kjWIm:80zDurN6RfBsHsYehbe8M4naKAE=:eyJkZWxldGVBZnRlckRheXMiOjEsInJldHVybkJvZHkiOiJ7XCJrZXlcIjpcIiQoa2V5KVwiLFwiaGFzaFwiOlwiJChldGFnKVwiLFwiZnNpemVcIjokKGZzaXplKSxcImJ1Y2tldFwiOlwiJChidWNrZXQpXCIsXCJuYW1lXCI6XCIkKHg6bmFtZSlcIn0iLCJzY29wZSI6ImplcnJ5Y2pyIiwiZGVhZGxpbmUiOjE1ODY4NTMzMDN9',
+    // 2019/04/15 - 2020/04/15 有效期一年(个人token) 1 is invalid
+    // token: '1ulAZOfj5sg_DOgFtZOFePnKUABddodvvnw4kjWIm:80zDurN6RfBsHsYehbe8M4naKAE=:eyJkZWxldGVBZnRlckRheXMiOjEsInJldHVybkJvZHkiOiJ7XCJrZXlcIjpcIiQoa2V5KVwiLFwiaGFzaFwiOlwiJChldGFnKVwiLFwiZnNpemVcIjokKGZzaXplKSxcImJ1Y2tldFwiOlwiJChidWNrZXQpXCIsXCJuYW1lXCI6XCIkKHg6bmFtZSlcIn0iLCJzY29wZSI6ImplcnJ5Y2pyIiwiZGVhZGxpbmUiOjE1ODY4NTMzMDN9',
+    // 2019/04/15 - 2020/04/15 有效期一年(s0.babyfs.cn)
+    token: '1A2y3S1gYvZtmwvi9Jr1hCznQgxtYHlfL1B3Cn0eR-L:7mtc_Mnj29Bv3_3CHGCJ_cWOyUk=:eyJkZWxldGVBZnRlckRheXMiOjEsInJldHVybkJvZHkiOiJ7XCJrZXlcIjpcIiQoa2V5KVwiLFwiaGFzaFwiOlwiJChldGFnKVwiLFwiZnNpemVcIjokKGZzaXplKSxcImJ1Y2tldFwiOlwiJChidWNrZXQpXCIsXCJuYW1lXCI6XCIkKHg6bmFtZSlcIn0iLCJzY29wZSI6InN0YXRpYyIsImRlYWRsaW5lIjoxNTg2OTMzNDMwfQ==',
     putExtra: {
       fname: 'may be a string',
       params: {},
@@ -42,6 +49,15 @@ function traceUpload() {
         OBSERVER && OBSERVER.error && OBSERVER.error(err);
       },
       complete(res) {
+        try {
+          const param = {
+            type: 1,
+            content: `${QN_DOMAIN}/${res.hash}`
+          };
+          $ajax.post(API_URL_LOG_UPLOAD, param);
+        } catch (error) {
+          console.log(error);
+        }
         OBSERVER && OBSERVER.complete && OBSERVER.complete(res);
       }
     }
@@ -58,9 +74,8 @@ function commonUpload() {
   qiniu.upload(arg.slice(1, arg.length));
 }
 
-// utype: num, file: blob, key: string, token: string, putExtra: object, config: object
 /**
- *
+ * @function 上传
  * @param {number} _utype  required
  * @param {blob} _file
  * @param {string} _key
@@ -85,7 +100,7 @@ function upload(_utype, _file, _key, _token, _putExtra, _config) {
 function example() {
   // upload(UTYPE.test); // invalid type
   // upload(UTYPE.default); // default type
-  let file = new Blob(['String: this is a test; double kill'], {
+  let file = new Blob(['Today\'s featured article'], {
     type: 'application/json'
   });
   let observer = {

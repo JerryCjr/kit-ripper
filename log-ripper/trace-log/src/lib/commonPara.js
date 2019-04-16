@@ -1,4 +1,3 @@
-/* eslint-disable no-console */
 import ajax from 'babyfs-request';
 import env from 'babyfs-env';
 // sessionId
@@ -38,6 +37,7 @@ async function fetchUid() {
   try {
     r = await ajax.post(API_URL, null);
   } catch (error) {
+    // eslint-disable-next-line no-console
     console.log(error);
   }
   if (r && r.data) {

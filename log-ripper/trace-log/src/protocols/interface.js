@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import * as util from '../lib/util';
 
 /**

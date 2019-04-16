@@ -12,7 +12,7 @@ rm(path.resolve(__dirname, '../dist'), function (err) {
 		throw err;
 	}
 
-	var port = 8888;
+	var port = 8889;
 	var url = 'http://localhost:' + port;
 
 	var app = express();
