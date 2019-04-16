@@ -2,6 +2,10 @@
 /* eslint-disable no-console */
 import 'babel-polyfill';
 import * as qiniu from 'qiniu-js';
+import {
+  assert
+} from './util.js';
+import $ajax from './ajax';
 
 const UTYPE = {
   default: 0,
@@ -12,13 +16,13 @@ const UTYPE = {
  * trace log upload
  */
 function traceUpload() {
-  const ARG = [...arguments[0]];
-  const FILE = ARG[1];
-  const OBSERVER = ARG[2];
+  const arg = [...arguments[0]];
+  const FILE = arg[1];
+  const OBSERVER = arg[2];
 
   const CONFIG = {
     key: null, // 不指定key名称 使用hash值
-    token: '1ulAZOfj5sg_DOgFtZOFePnKUABddodvvnw4kjWIm:80zDurN6RfBsHsYehbe8M4naKAE=:eyJkZWxldGVBZnRlckRheXMiOjEsInJldHVybkJvZHkiOiJ7XCJrZXlcIjpcIiQoa2V5KVwiLFwiaGFzaFwiOlwiJChldGFnKVwiLFwiZnNpemVcIjokKGZzaXplKSxcImJ1Y2tldFwiOlwiJChidWNrZXQpXCIsXCJuYW1lXCI6XCIkKHg6bmFtZSlcIn0iLCJzY29wZSI6ImplcnJ5Y2pyIiwiZGVhZGxpbmUiOjE1ODY4NTMzMDN9',
+    token: '1u1lAZOfj5sg_DOgFtZOFePnKUABddodvvnw4kjWIm:80zDurN6RfBsHsYehbe8M4naKAE=:eyJkZWxldGVBZnRlckRheXMiOjEsInJldHVybkJvZHkiOiJ7XCJrZXlcIjpcIiQoa2V5KVwiLFwiaGFzaFwiOlwiJChldGFnKVwiLFwiZnNpemVcIjokKGZzaXplKSxcImJ1Y2tldFwiOlwiJChidWNrZXQpXCIsXCJuYW1lXCI6XCIkKHg6bmFtZSlcIn0iLCJzY29wZSI6ImplcnJ5Y2pyIiwiZGVhZGxpbmUiOjE1ODY4NTMzMDN9',
     putExtra: {
       fname: 'may be a string',
       params: {},
@@ -50,13 +54,23 @@ function traceUpload() {
  * common upload is the same as qiniu upload
  */
 function commonUpload() {
-  const arr = [...arguments[0]];
-  qiniu.upload(arr.slice(1, arr.length));
+  const arg = [...arguments[0]];
+  qiniu.upload(arg.slice(1, arg.length));
 }
 
 // utype: num, file: blob, key: string, token: string, putExtra: object, config: object
+/**
+ *
+ * @param {number} _utype  required
+ * @param {blob} _file
+ * @param {string} _key
+ * @param {string} _token
+ * @param {object} _putExtra
+ * @param {object} _config
+ */
 function upload(_utype, _file, _key, _token, _putExtra, _config) {
   const type = arguments[0];
+  assert(type >= 0, 'Invalid utype value!');
   switch (type) {
     case UTYPE.trace:
       traceUpload(arguments);
@@ -69,8 +83,11 @@ function upload(_utype, _file, _key, _token, _putExtra, _config) {
 
 // example test
 function example() {
-  // upload(UTYPE.default);
-  let file = new Blob(['String: this is a test; double kill'], { type: 'application/json' });
+  // upload(UTYPE.test); // invalid type
+  // upload(UTYPE.default); // default type
+  let file = new Blob(['String: this is a test; double kill'], {
+    type: 'application/json'
+  });
   let observer = {
     next(res) {
       console.log(res);
@@ -83,8 +100,7 @@ function example() {
       document.write(JSON.stringify(res, null, 2));
     }
   };
-  upload(UTYPE.trace, file, observer);
-
+  upload(UTYPE.trace, file, observer); // trace type
 }
 
 example();

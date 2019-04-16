@@ -62,6 +62,7 @@
   ],
   "dependencies": {
     "babel-polyfill": "^6.23.0",
+    "babyfs-request": "^0.2.2",
     "qiniu-js": "^2.5.4"
   }
 }
